@@ -1,33 +1,20 @@
 node {
-    def app
-
-    stage('Clone repository') {
-        /* Cloning the Repository to our Workspace */
-
-        checkout scm
+     stage('SCM Checkout') {
+        git url:'https://github.com/ssvadlamani/NodeApp'
     }
-
-    stage('Build image') {
-        /* This builds the actual image */
-
-        app = docker.build("sivasankarvadlamani/nodeapp")
-    }
-
-    stage('Test image') {
-        
-        app.inside {
-            echo "Tests passed"
-        }
-    }
-
-    stage('Push image') {
-        /* 
-			You would need to first register with DockerHub before you can push images to your account
-		*/
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-pwd') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-            } 
-                echo "Trying to Push Docker Build to DockerHub"
-    }
+     stage('MVN  package') {
+         bat "npm install"
+      }
+      
+      stage('Build Docker Image') {
+         bat "docker build -t sivasankarvadlamani/nodeapp:2.0.0 ."
+      }
+       stage('push Docker Image') {
+    withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
+    bat "docker login -u sivasankarvadlamani -p ${dockerHubPwd}" 
+}
+bat "docker push sivasankarvadlamani/nodeapp:2.0.0"
+      }
+    
+    
 }
