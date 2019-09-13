@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nodeapp
-  namespace: my_namespace_ssv
+  namespace: athena_ms
   labels:
     app: nodeapp
 spec:
@@ -16,7 +16,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: nodeapp
-  namespace: my_namespace_ssv
+  namespace: athena_ms
   labels:
     app: nodeapp
 spec:
@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: nodeapp
-          image: us.icr.io/my_namespace_ssv/nodeapp
+          image: us.icr.io/athena_ms/nodeapp
           ports:
             - containerPort: 8000
       imagePullSecrets:
